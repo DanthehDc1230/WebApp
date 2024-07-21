@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Servos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .slider-container {
+            margin: 20px auto;
+            width: 300px;
+            text-align: left;
+        }
+        .slider-label {
+            margin-bottom: 5px;
+        }
+        .slider {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Control de Servos</h1>
+
+    <div class="slider-container">
+        <div class="slider-label">Servo 1: <span id="servo1Value">90</span>°</div>
+        <input type="range" min="0" max="180" value="90" class="slider" id="servo1">
+    </div>
+    <div class="slider-container">
+        <div class="slider-label">Servo 2: <span id="servo2Value">90</span>°</div>
+        <input type="range" min="0" max="180" value="90" class="slider" id="servo2">
+    </div>
+    <div class="slider-container">
+        <div class="slider-label">Servo 3: <span id="servo3Value">90</span>°</div>
+        <input type="range" min="0" max="180" value="90" class="slider" id="servo3">
+    </div>
+    <div class="slider-container">
+        <div class="slider-label">Servo 4: <span id="servo4Value">90</span>°</div>
+        <input type="range" min="0" max="180" value="90" class="slider" id="servo4">
+    </div>
+    <div class="slider-container">
+        <div class="slider-label">Servo 5: <span id="servo5Value">90</span>°</div>
+        <input type="range" min="0" max="180" value="90" class="slider" id="servo5">
+    </div>
+    <div class="slider-container">
+        <div class="slider-label">Servo 6: <span id="servo6Value">90</span>°</div>
+        <input type="range" min="0" max="180" value="90" class="slider" id="servo6">
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js"></script>
+
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDWDN_5BNZWrj-WgX6sgQGmoaJWhe29YDQ",
+            authDomain: "brazo-roob.firebaseapp.com",
+            databaseURL: "https://roboto-2eb13-default-rtdb.firebaseio.com/",
+            projectId: "brazo-roob",
+            storageBucket: "brazo-roob.appspot.com",
+            messagingSenderId: "100947497149",
+            appId: "1:100947497149:web:a1ad14827b841e48d9e7d4"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Autenticación de Firebase
+        const auth = firebase.auth();
+        auth.signInWithEmailAndPassword("dcvelez@g.com", "1309226353").catch(function(error) {
+            console.error("Error de autenticación:", error.message);
+        });
+
+        // Base de datos de Firebase
+        const database = firebase.database();
+
+        function updateServoValue(servoNumber, value) {
+            const uid = auth.currentUser.uid;
+            const path = `UsersData/${uid}/servo${servoNumber}`;
+            database.ref(path).set(value);
+        }
+
+        function setupSlider(servoNumber) {
+            const slider = document.getElementById(`servo${servoNumber}`);
+            const valueDisplay = document.getElementById(`servo${servoNumber}Value`);
+
+            slider.addEventListener('input', function() {
+                const value = slider.value;
+                valueDisplay.textContent = value;
+                updateServoValue(servoNumber, value);
+            });
+        }
+
+        for (let i = 1; i <= 6; i++) {
+            setupSlider(i);
+        }
+    </script>
+</body>
+</html>
